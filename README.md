@@ -33,4 +33,4 @@ Neovim is now installed on your machine
 > `PlugInstall` to install all of the nvim plugins
 
 2. Install Coc Plugins
-> `CocInstall coc-json coc-tsserver coc-clangd coc-rust-analyzer`
+> `CocInstall coc-json coc-tsserver coc-clangd coc-rust-analyzer coc-prettier coc-pairs coc-html-css-support coc-html coc-emmet coc-react-refactor coc-python`

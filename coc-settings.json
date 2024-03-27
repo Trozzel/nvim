@@ -1,4 +1,4 @@
 {
 	"coc.preferences.jumpCommand": "tab drop",
-	"clangd.inlayHints.enable": true,
+	"html.autoClosingTags": true
 }

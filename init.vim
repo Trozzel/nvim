@@ -204,6 +204,35 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 " 			END COC VIM SETTINGS
 " *************************************************************************** "
 
+"			BEGIN EMMET SETTINGS
+" *************************************************************************** *
+let g:user_emmet_settings = {
+\  'variables': {'lang': 'ja'},
+\  'html': {
+\    'default_attributes': {
+\      'option': {'value': v:null},
+\      'textarea': {'id': v:null, 'name': v:null, 'cols': 10, 'rows': 10},
+\    },
+\    'snippets': {
+\      'html:5': "<!DOCTYPE html>\n"
+\              ."<html lang=\"${lang}\">\n"
+\              ."<head>\n"
+\              ."\t<meta charset=\"${charset}\">\n"
+\              ."\t<title></title>\n"
+\              ."\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+\              ."</head>\n"
+\              ."<body>\n\t${child}|\n</body>\n"
+\              ."</html>",
+\    },
+\  },
+\  'javascript.jsx' : {
+\      'extends' : 'jsx',
+\  },
+\  'javascriptreact': {
+\	   'extends': 'html',
+\  },
+\}
+
 "			BEGIN MARKDOWN SETTINGS
 "**************************************************************************** "
 " set to 1, nvim will open the preview window after entering the Markdown buffer
@@ -344,15 +373,17 @@ nnoremap <c-k> <c-w>k
 nnoremap <c-l> <c-w>l
 nnoremap <tab><tab> <c-w><c-w>
 noremap	 <C-f> :set foldmethod=indent<CR>
-autocmd FileType cpp setlocal colorcolumn=80
+nnoremap NE :NERDTreeToggle<CR>
+
+autocmd FileType cpp,rust setlocal colorcolumn=80
 
 " OTHER REMAPS
 nnoremap <Leader>h :set hlsearch!<CR>
 
 " SET CUSTOM HTML SETTINGS
-autocmd FileType html setlocal shiftwidth=2 tabstop=2 softtabstop=2
-let g:user_emmet_install_global = 0
-autocmd FileType html,css EmmetInstall
+autocmd FileType html,javascript,javascriptreact setlocal shiftwidth=2 tabstop=2 softtabstop=2
+let g:user_emmet_install_global = 1
+autocmd FileType html,css,javascriptreact,javascript.jsx EmmetInstall
 let g:user_emmet_leader_key=','
 autocmd FileType cpp setlocal shiftwidth=4 tabstop=4 softtabstop=4
 

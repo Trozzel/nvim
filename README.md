@@ -16,8 +16,10 @@
 Neovim is now installed on your machine
 
 4. Install [Vim-Plug](https://github.com/junegunn/vim-plug) on the host
-> `sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'`
+    ```
+    sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    ```
 
 5. Install [nodejs](https://nodejs.org/en/download/) on the host
 > `curl -sL install-node.vercel.app/lts | bash`
@@ -33,4 +35,6 @@ Neovim is now installed on your machine
 > `PlugInstall` to install all of the nvim plugins
 
 2. Install Coc Plugins
-> `CocInstall coc-json coc-tsserver coc-clangd coc-rust-analyzer coc-prettier coc-pairs coc-html-css-support coc-html coc-emmet coc-react-refactor coc-python`
+```
+CocInstall coc-json coc-tsserver coc-clangd coc-rust-analyzer coc-prettier coc-pairs coc-html-css-support coc-html coc-emmet coc-react-refactor coc-python
+```

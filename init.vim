@@ -9,12 +9,18 @@ call plug#begin()
 
 " Make sure you use single quotes
 
+" Copilot Install
+Plug 'github/copilot.vim'
+
 " NERDTree
 Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
 
 " CoC VIM
 " Use release branch (recommended)
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" Lorem ipsum generator
+Plug 'https://github.com/wolandark/vim-loremipsum.git'
 
 " THEMES
 Plug 'mhartington/oceanic-next'
@@ -34,6 +40,7 @@ Plug 'xolox/vim-session'
 Plug 'xolox/vim-misc'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install' }
 Plug 'NLKNguyen/papercolor-theme'
+Plug 'turbio/bracey.vim'
 
 " Initialize plugin system
 " - Automatically executes `filetype plugin indent on` and `syntax enable`.
@@ -114,6 +121,7 @@ nmap <leader>rn <Plug>(coc-rename)
 " Formatting selected code
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
+nnoremap <leader>F :Format<CR>
 
 augroup mygroup
   autocmd!
@@ -181,7 +189,7 @@ command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.org
 " Add (Neo)Vim's native statusline support
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+"set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " Mappings for CoCList
 " Show all diagnostics
@@ -202,6 +210,14 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
 " 			END COC VIM SETTINGS
+" *************************************************************************** "
+
+"			BEGIN COPILOT SETTINGS
+" *************************************************************************** "
+imap <silent><script><expr> <Right> copilot#Accept("")
+let g:copilot_no_tab_map = v:true
+
+"			END COPILOT SETTINGS
 " *************************************************************************** "
 
 "			BEGIN EMMET SETTINGS
@@ -348,6 +364,10 @@ let g:mkdp_combine_preview = 0
 let g:mkdp_combine_preview_auto_refresh = 1
 " ************************************************************************* "
 
+"			BEGIN BRACEY SETTINGS											"
+let g:bracey_server_port = 8888
+let g:bracey_auto_start = 0
+
 :set number relativenumber
 :augroup numbertoggle
 :  autocmd!
@@ -372,23 +392,35 @@ nnoremap <c-j> <c-w>j
 nnoremap <c-k> <c-w>k
 nnoremap <c-l> <c-w>l
 nnoremap <tab><tab> <c-w><c-w>
+nnoremap <Leader>t : tabnew<CR>
 noremap	 <C-f> :set foldmethod=indent<CR>
 nnoremap NE :NERDTreeToggle<CR>
 
-autocmd FileType cpp,rust setlocal colorcolumn=80
+autocmd FileType cpp,rust,python setlocal colorcolumn=80
 
 " OTHER REMAPS
 nnoremap <Leader>h :set hlsearch!<CR>
 
 " SET CUSTOM HTML SETTINGS
-autocmd FileType html,javascript,javascriptreact setlocal shiftwidth=2 tabstop=2 softtabstop=2
+autocmd FileType json,html,javascript,javascriptreact,typescript,typescriptreact,htmldjango 
+			\setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
 let g:user_emmet_install_global = 1
 autocmd FileType html,css,javascriptreact,javascript.jsx EmmetInstall
 let g:user_emmet_leader_key=','
 autocmd FileType cpp setlocal shiftwidth=4 tabstop=4 softtabstop=4
+autocmd FileType typescriptreact setlocal autoindent smartindent
 
 " SET COLORSCHEME
 colorscheme PaperColor
 set nowrap
 
 set cursorline
+
+" SAVE TABOO TO SESSIONS
+set sessionoptions+=tabpages,globals
+
+" TABOO FORMAT
+let g:taboo_tab_format=" %N %f%m "
+let g:taboo_renamed_tab_format=" %N [%l]%m "
+
+set colorcolumn=80

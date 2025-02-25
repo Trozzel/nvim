@@ -1,4 +1,12 @@
 {
-	"coc.preferences.jumpCommand": "tab drop",
-	"html.autoClosingTags": true
+  "coc.preferences.jumpCommand": "tab drop",
+  "python.linting.mypyEnabled": false,
+  "python.linting.flake8Enabled": false,
+  "python.linting.enabled": true,
+  "python.jediEnabled": true,
+  "htmldjango.enable": true,
+  "htmldjango.djlint.indent": 2,
+  "python.analysis.typeCheckingMode": "standard",
+  "rust-analyzer.server.path": "/usr/local/bin/rust-analyzer",
+  "rust-analyzer.diagnostics.disabled": ["unresolved-proc-macro"]
 }

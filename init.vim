@@ -402,8 +402,8 @@ autocmd FileType cpp,rust,python setlocal colorcolumn=80
 nnoremap <Leader>h :set hlsearch!<CR>
 
 " SET CUSTOM HTML SETTINGS
-autocmd FileType json,html,javascript,javascriptreact,typescript,typescriptreact,htmldjango 
-			\setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
+autocmd FileType json,html,javascript,javascriptreact,typescript,typescriptreact,htmldjango,css
+			\: setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
 let g:user_emmet_install_global = 1
 autocmd FileType html,css,javascriptreact,javascript.jsx EmmetInstall
 let g:user_emmet_leader_key=','

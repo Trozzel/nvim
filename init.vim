@@ -12,12 +12,25 @@ call plug#begin()
 " Copilot Install
 Plug 'github/copilot.vim'
 
+" Copilot Chat
+call plug#begin()
+Plug 'nvim-lua/plenary.nvim'
+Plug 'CopilotC-Nvim/CopilotChat.nvim'
+call plug#end()
+
+lua << EOF
+require("CopilotChat").setup()
+EOF
+
 " NERDTree
 Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
 
 " CoC VIM
 " Use release branch (recommended)
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" Justfile pretty
+Plug 'NoahTheDuke/vim-just'
 
 " Lorem ipsum generator
 Plug 'https://github.com/wolandark/vim-loremipsum.git'
@@ -34,13 +47,15 @@ Plug 'gcmt/taboo.vim'
 Plug 'tomasr/molokai'
 Plug 'sickill/vim-monokai'
 Plug 'mattn/emmet-vim'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+"Plug 'vim-airline/vim-airline'
+"Plug 'vim-airline/vim-airline-themes'
 Plug 'xolox/vim-session'
 Plug 'xolox/vim-misc'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install' }
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'turbio/bracey.vim'
+Plug 'projekt0n/github-nvim-theme'
+Plug 'mzlogin/vim-markdown-toc'
 
 " Initialize plugin system
 " - Automatically executes `filetype plugin indent on` and `syntax enable`.
@@ -362,24 +377,31 @@ let g:mkdp_combine_preview = 0
 " auto refetch combine preview contents when change markdown buffer
 " only when g:mkdp_combine_preview is 1
 let g:mkdp_combine_preview_auto_refresh = 1
-" ************************************************************************* "
+" *************************************************************************** "
 
-"			BEGIN BRACEY SETTINGS											"
+"************************ BEGIN BRACEY SETTINGS ***************************** "
 let g:bracey_server_port = 8888
 let g:bracey_auto_start = 0
 
-:set number relativenumber
-:augroup numbertoggle
-:  autocmd!
-:  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
-:  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
-:augroup END
+"^^^^^^^^^^^^^^^^^^^^^^^ END BRACEY SETTINGS ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+set number relativenumber
+augroup numbertoggle
+  autocmd!
+  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+augroup END
 
 " SET FOLDING
-:augroup vimrc
-:  au BufReadPre * setlocal foldmethod=indent
-:  au BufWinEnter * if &fdm == 'indent' | setlocal foldmethod=manual | endif
-:augroup END
+augroup vimrc
+  au BufReadPre * setlocal foldmethod=indent
+  au BufWinEnter * if &fdm == 'indent' | setlocal foldmethod=manual | endif
+augroup END
+
+" SET MANUAL FOLDING FOR MARKDOWN
+augroup ManualFold
+	autocmd BufReadPre * setlocal foldmethod=manual
+augroup END
 
 " TABSTOP SETTINGS
 set tabstop=4
@@ -396,31 +418,83 @@ nnoremap <Leader>t : tabnew<CR>
 noremap	 <C-f> :set foldmethod=indent<CR>
 nnoremap NE :NERDTreeToggle<CR>
 
-autocmd FileType cpp,rust,python setlocal colorcolumn=80
+set colorcolumn=80
+
+autocmd FileType cpp,rust setlocal colorcolumn=100
 
 " OTHER REMAPS
 nnoremap <Leader>h :set hlsearch!<CR>
 
 " SET CUSTOM HTML SETTINGS
-autocmd FileType json,html,javascript,javascriptreact,typescript,typescriptreact,htmldjango,css
-			\: setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
+augroup IndentForWebDev
+	autocmd!
+	autocmd FileType sh,json,html,htmldjango,css,markdown,javascript,javascriptreact,typescriptreact
+				\ setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
+	autocmd FileType html,css,javascriptreact,javascript.jsx EmmetInstall
+	autocmd FileType typescriptreact setlocal autoindent smartindent
+augroup END
+
+" SET SPELLCHECK 
+augroup SpellCheck
+  autocmd!
+  autocmd FileType markdown,text, setlocal spell spelllang=en_us
+augroup END
+
 let g:user_emmet_install_global = 1
-autocmd FileType html,css,javascriptreact,javascript.jsx EmmetInstall
 let g:user_emmet_leader_key=','
-autocmd FileType cpp setlocal shiftwidth=4 tabstop=4 softtabstop=4
-autocmd FileType typescriptreact setlocal autoindent smartindent
+autocmd FileType rust setlocal shiftwidth=4 tabstop=4 softtabstop=4
 
-" SET COLORSCHEME
-colorscheme PaperColor
 set nowrap
-
 set cursorline
 
 " SAVE TABOO TO SESSIONS
 set sessionoptions+=tabpages,globals
 
+" DISABLE AUTOSAVE ASK
+:let g:session_autosave = 'no'
+:let g:session_autoload = 'no'
+
 " TABOO FORMAT
 let g:taboo_tab_format=" %N %f%m "
 let g:taboo_renamed_tab_format=" %N [%l]%m "
 
-set colorcolumn=80
+" KEY COMBINATION FOR COPILOT
+"*************************************************************************** "
+function! ToggleCopilot()
+  if exists(':Copilot')
+	if copilot#Enabled() == '1'
+	  Copilot disable
+	  echo "Disabling Copilot"
+	else
+	  Copilot enable
+	  echo "Enabling Copilot"
+	endif
+  else
+	echo "Copilot is not installed"
+  endif
+endfunction
+nnoremap <leader>cp :call ToggleCopilot()<CR>
+
+" TOGGLE CocOutline
+nnoremap <Leader>co :CocOutline<CR>
+
+" TMXU MOUSE COPY / PASTE
+"*************************************************************************** "
+augroup TmuxMouse
+  autocmd!
+  autocmd VimEnter * silent !tmux set -g mouse on
+  autocmd VimLeave * silent !tmux set -g mouse off
+augroup END
+
+
+" ****************************** VIMCODE *********************************** "
+" Only source autosync.vim if it exists in project root
+if filereadable(getcwd() . "/.vimcode/autosync.vim")
+  execute "source " . getcwd() . "/.vimcode/autosync.vim"
+endif
+
+" ******************************   GIT BLAME ******************************* "
+command! -nargs=1 Blame execute '!git blame -L ' . <q-args> . ' %'
+command! -nargs=? Blame execute '!git blame -L ' . (empty(<q-args>) ? line('.') . ',' . line('.') : <q-args>) . ' %'
+
+nnoremap <Leader>gb :Blame<CR>

@@ -1,29 +1,34 @@
 {
   "coc.preferences.jumpCommand": "tab drop",
-  "python.linting.mypyEnabled": false,
+
+  "outline.showLineNumber": false,
+  "outline.detailAsDescription": false,
+  "outline.previewBorderRounded": true,
+  "outline.sortBy": "category",
+
+  "python.linting.mypyEnabled": true,
   "python.linting.flake8Enabled": false,
   "python.linting.enabled": true,
   "python.jediEnabled": true,
-  "htmldjango.enable": true,
-  "htmldjango.djlint.indent": 2,
-  "python.analysis.typeCheckingMode": "standard",
-  "rust-analyzer.server.path": "/usr/local/bin/rust-analyzer",
-  "rust-analyzer.diagnostics.disabled": ["unresolved-proc-macro"],
 
-  "clangd.arguments": [
-    "--clang-tidy",
-    "--fallback-style=llvm",
-    "--all-scopes-completion",
-    "--log-verbose"
-  ],
-  "clangd.fallbackFlags": [
-    "-std=C++20",
-    "-I/usr/include",
-    "-I/usr/local/include",
-    "-I/usr/local/include/c++/14",
-    "-I/usr/local/opt/llvm/include/c++/v1"
-  ],
-  "clangd.path": "~/.config/coc/extensions/coc-clangd-data/install/19.1.2/clangd_19.1.2/bin/clangd",
+  "rust-analyzer.inlayHints.parameterHints.enable": false,
+  "rust-analyzer.inlayHints.closureStyle": "rust_analyzer",
+  "rust-analyzer.inlayHints.typeHints.hideClosureParameter": true,
+  "rust-analyzer.inlayHints.typeHints.enable": false,
+  "rust-analyzer.check.command": "clippy",
+  "rust-analyzer.inlayHints.maxLength": 5,
+
+  "clangd.fallbackFlags": ["-std=C++23"],
+
+  "inlayHint.enable": false,
+
+  "[cpp]": {
+    "inlayHint.enable": false
+  },
+
+  "yaml.schemas": {
+    "kubernetes": "/*.yaml"
+  },
 
   "html.format.indentHandlebars": true,
   "html.format.templating": true

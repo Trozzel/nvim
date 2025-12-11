@@ -1,5 +1,6 @@
 {
   "coc.preferences.jumpCommand": "tab drop",
+  "coc.preferences.currentFunctionSymbolAutoUpdate": true,
 
   "outline.showLineNumber": false,
   "outline.detailAsDescription": false,

@@ -13,14 +13,8 @@ call plug#begin()
 Plug 'github/copilot.vim'
 
 " Copilot Chat
-call plug#begin()
 Plug 'nvim-lua/plenary.nvim'
 Plug 'CopilotC-Nvim/CopilotChat.nvim'
-call plug#end()
-
-lua << EOF
-require("CopilotChat").setup()
-EOF
 
 " NERDTree
 Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
@@ -47,7 +41,7 @@ Plug 'gcmt/taboo.vim'
 Plug 'tomasr/molokai'
 Plug 'sickill/vim-monokai'
 Plug 'mattn/emmet-vim'
-"Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline'
 "Plug 'vim-airline/vim-airline-themes'
 Plug 'xolox/vim-session'
 Plug 'xolox/vim-misc'
@@ -67,6 +61,10 @@ call plug#end()
 " *************************************************************************** "
 set nobackup
 set nowritebackup
+lua << EOF
+require("CopilotChat").setup()
+EOF
+
 " 				COC VIM SETTINGS
 " **************************************************************************
 " Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
@@ -204,7 +202,7 @@ command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.org
 " Add (Neo)Vim's native statusline support
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline
-"set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+" set statusline^=%{coc#status()}::%{get(b:,'coc_current_function','')}
 
 " Mappings for CoCList
 " Show all diagnostics
@@ -438,11 +436,11 @@ augroup END
 augroup SpellCheck
   autocmd!
   autocmd FileType markdown,text, setlocal spell spelllang=en_us
+  autocmd FileType markdown setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 augroup END
 
 let g:user_emmet_install_global = 1
 let g:user_emmet_leader_key=','
-autocmd FileType rust setlocal shiftwidth=4 tabstop=4 softtabstop=4
 
 set nowrap
 set cursorline

@@ -1,4 +1,5 @@
-call plug#begin()
+set runtimepath+=~/.local/share/nvim.vimscript/site
+call plug#begin('~/.local/share/nvim.vimscript/plugged')
 " The default plugin directory will be as follows:
 "   - Vim (Linux/macOS): '~/.vim/plugged'
 "   - Vim (Windows): '~/vimfiles/plugged'
@@ -28,6 +29,12 @@ Plug 'NoahTheDuke/vim-just'
 
 " Lorem ipsum generator
 Plug 'https://github.com/wolandark/vim-loremipsum.git'
+
+" Vim fugitive
+Plug 'tpope/vim-fugitive'
+
+" Vim gitgutter
+Plug 'airblade/vim-gitgutter'
 
 " THEMES
 Plug 'mhartington/oceanic-next'
@@ -115,8 +122,6 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
 " Use K to show documentation in preview window
-nnoremap <silent> K :call ShowDocumentation()<CR>
-
 function! ShowDocumentation()
   if CocAction('hasProvider', 'hover')
     call CocActionAsync('doHover')
@@ -124,6 +129,7 @@ function! ShowDocumentation()
     call feedkeys('K', 'in')
   endif
 endfunction
+nnoremap <silent> K :call ShowDocumentation()<CR>
 
 " Highlight the symbol and its references when holding the cursor
 autocmd CursorHold * silent call CocActionAsync('highlight')
@@ -391,7 +397,7 @@ augroup numbertoggle
 augroup END
 
 " SET FOLDING
-augroup vimrc
+augroup myvimfold
   au BufReadPre * setlocal foldmethod=indent
   au BufWinEnter * if &fdm == 'indent' | setlocal foldmethod=manual | endif
 augroup END
@@ -430,13 +436,6 @@ augroup IndentForWebDev
 				\ setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
 	autocmd FileType html,css,javascriptreact,javascript.jsx EmmetInstall
 	autocmd FileType typescriptreact setlocal autoindent smartindent
-augroup END
-
-" SET SPELLCHECK 
-augroup SpellCheck
-  autocmd!
-  autocmd FileType markdown,text, setlocal spell spelllang=en_us
-  autocmd FileType markdown setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 augroup END
 
 let g:user_emmet_install_global = 1
@@ -492,7 +491,24 @@ if filereadable(getcwd() . "/.vimcode/autosync.vim")
 endif
 
 " ******************************   GIT BLAME ******************************* "
-command! -nargs=1 Blame execute '!git blame -L ' . <q-args> . ' %'
-command! -nargs=? Blame execute '!git blame -L ' . (empty(<q-args>) ? line('.') . ',' . line('.') : <q-args>) . ' %'
+command! -nargs=? Blame call s:Blame(<q-args>)
+
+" ******************************   GIT BLAME ******************************* "
+command! -nargs=? Blame call s:Blame(<q-args>)
+
+function! s:Blame(args)
+  if empty(a:args)
+    let l:start = line('.')
+    let l:end = l:start
+  elseif a:args =~# '^\d\+$'
+    let l:start = line('.')
+    let l:end = l:start + str2nr(a:args)
+  else
+    let [l:start, l:end] = map(split(a:args, ','), 'str2nr(v:val)')
+  endif
+
+  execute '!git blame -L ' . l:start . ',' . l:end . ' %'
+endfunction
 
 nnoremap <Leader>gb :Blame<CR>
+

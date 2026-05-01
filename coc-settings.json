@@ -28,8 +28,11 @@
   },
 
   "yaml.schemas": {
-    "kubernetes": "/*.yaml"
+    "kubernetes": "/*.yaml",
+    "https://taskfile.dev/schema.json": "Taskfile.yaml"
   },
+
+  "yaml.enable": false,
 
   "html.format.indentHandlebars": true,
   "html.format.templating": true

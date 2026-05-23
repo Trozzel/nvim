@@ -32,9 +32,38 @@ Plug 'https://github.com/wolandark/vim-loremipsum.git'
 
 " Vim fugitive
 Plug 'tpope/vim-fugitive'
+Plug 'shumphrey/fugitive-gitlab.vim'
 
 " Vim gitgutter
 Plug 'airblade/vim-gitgutter'
+
+" Helm file detection
+Plug 'towolf/vim-helm'
+
+" Airline
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'preservim/tagbar'
+
+
+" AVANTE PLUGIN
+"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
+" Deps
+Plug 'nvim-lua/plenary.nvim'
+Plug 'MunifTanjim/nui.nvim'
+Plug 'MeanderingProgrammer/render-markdown.nvim'
+
+" Optional deps
+Plug 'hrsh7th/nvim-cmp'
+Plug 'nvim-tree/nvim-web-devicons' "or Plug 'echasnovski/mini.icons'
+Plug 'HakonHarnes/img-clip.nvim'
+Plug 'stevearc/dressing.nvim' " for enhanced input UI
+Plug 'folke/snacks.nvim' " for modern input UI
+
+" Yay, pass source=true if you want to build from source
+Plug 'yetone/avante.nvim', { 'branch': 'main', 'do': 'make' }
+" END AVANTE PLUGIN
+"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
 
 " THEMES
 Plug 'mhartington/oceanic-next'
@@ -48,8 +77,6 @@ Plug 'gcmt/taboo.vim'
 Plug 'tomasr/molokai'
 Plug 'sickill/vim-monokai'
 Plug 'mattn/emmet-vim'
-Plug 'vim-airline/vim-airline'
-"Plug 'vim-airline/vim-airline-themes'
 Plug 'xolox/vim-session'
 Plug 'xolox/vim-misc'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install' }
@@ -64,13 +91,30 @@ call plug#end()
 " You can revert the settings after the call like so:
 "   filetype indent off   " Disable file-type-specific indentation
 "   syntax off            " Disable syntax highlighting
-"
+
+" AVANTE CUSTOMIZATION
 " *************************************************************************** "
-set nobackup
-set nowritebackup
-lua << EOF
-require("CopilotChat").setup()
-EOF
+autocmd! User avante.nvim
+source ~/.config/nvim.vimscript/plugins/avante.vim
+
+" AIRLINE CUSTOMIZATION
+" *************************************************************************** "
+
+" Hide [MODE]
+let g:airline_section_a = ''
+
+" Show file name + current tag/function
+let g:airline_section_c = '%t %{tagbar#currenttag("%s", "", "f")}'
+
+" Show only filetype on the right
+let g:airline_section_x = '%{&filetype}'
+
+" Hide extra right-side sections
+let g:airline_section_y = ''
+let g:airline_section_z = ''
+
+" Enable airline integration with tagbar
+let g:airline#extensions#tagbar#enabled = 1
 
 " 				COC VIM SETTINGS
 " **************************************************************************
@@ -236,6 +280,10 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 imap <silent><script><expr> <Right> copilot#Accept("")
 let g:copilot_no_tab_map = v:true
 
+" GIT SETTINGS
+"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
+let g:fugitive_gitlab_domains = ['https://gitlab.dulltentacles.com/']
+
 "			END COPILOT SETTINGS
 " *************************************************************************** "
 
@@ -388,23 +436,22 @@ let g:bracey_server_port = 8888
 let g:bracey_auto_start = 0
 
 "^^^^^^^^^^^^^^^^^^^^^^^ END BRACEY SETTINGS ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 set number relativenumber
+
+function! s:ShouldUseNumbers() abort
+  return index(['Avante', 'AvanteInput', 'AvanteSelectedFiles'], &filetype) == -1
+endfunction
+
 augroup numbertoggle
   autocmd!
-  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
-  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+  autocmd BufEnter,FocusGained,InsertLeave * if <SID>ShouldUseNumbers() | setlocal relativenumber | endif
+  autocmd BufLeave,FocusLost,InsertEnter   * if <SID>ShouldUseNumbers() | setlocal norelativenumber | endif
 augroup END
 
 " SET FOLDING
 augroup myvimfold
   au BufReadPre * setlocal foldmethod=indent
   au BufWinEnter * if &fdm == 'indent' | setlocal foldmethod=manual | endif
-augroup END
-
-" SET MANUAL FOLDING FOR MARKDOWN
-augroup ManualFold
-	autocmd BufReadPre * setlocal foldmethod=manual
 augroup END
 
 " TABSTOP SETTINGS
@@ -432,7 +479,7 @@ nnoremap <Leader>h :set hlsearch!<CR>
 " SET CUSTOM HTML SETTINGS
 augroup IndentForWebDev
 	autocmd!
-	autocmd FileType sh,json,html,htmldjango,css,markdown,javascript,javascriptreact,typescriptreact
+	autocmd FileType sh,json,html,htmldjango,css,javascript,javascriptreact,typescriptreact
 				\ setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
 	autocmd FileType html,css,javascriptreact,javascript.jsx EmmetInstall
 	autocmd FileType typescriptreact setlocal autoindent smartindent
@@ -489,26 +536,4 @@ augroup END
 if filereadable(getcwd() . "/.vimcode/autosync.vim")
   execute "source " . getcwd() . "/.vimcode/autosync.vim"
 endif
-
-" ******************************   GIT BLAME ******************************* "
-command! -nargs=? Blame call s:Blame(<q-args>)
-
-" ******************************   GIT BLAME ******************************* "
-command! -nargs=? Blame call s:Blame(<q-args>)
-
-function! s:Blame(args)
-  if empty(a:args)
-    let l:start = line('.')
-    let l:end = l:start
-  elseif a:args =~# '^\d\+$'
-    let l:start = line('.')
-    let l:end = l:start + str2nr(a:args)
-  else
-    let [l:start, l:end] = map(split(a:args, ','), 'str2nr(v:val)')
-  endif
-
-  execute '!git blame -L ' . l:start . ',' . l:end . ' %'
-endfunction
-
-nnoremap <Leader>gb :Blame<CR>
 

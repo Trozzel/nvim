@@ -1,0 +1,10 @@
+setlocal syntax=markdown
+setlocal nonumber
+setlocal norelativenumber
+setlocal signcolumn=no
+
+
+
+" Hide markdown link markup/targets, showing only the visible text
+setlocal conceallevel=2
+setlocal concealcursor=nvic

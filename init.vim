@@ -97,25 +97,25 @@ call plug#end()
 autocmd! User avante.nvim
 source ~/.config/nvim.vimscript/plugins/avante.vim
 
-" AIRLINE CUSTOMIZATION
-" *************************************************************************** "
-
-" Hide [MODE]
-let g:airline_section_a = ''
-
-" Show file name + current tag/function
-let g:airline_section_c = '%t %{tagbar#currenttag("%s", "", "f")}'
-
-" Show only filetype on the right
-let g:airline_section_x = '%{&filetype}'
-
-" Hide extra right-side sections
-let g:airline_section_y = ''
-let g:airline_section_z = ''
-
-" Enable airline integration with tagbar
-let g:airline#extensions#tagbar#enabled = 1
-
+" " AIRLINE CUSTOMIZATION
+" " *************************************************************************** "
+" 
+" " Hide [MODE]
+" let g:airline_section_a = ''
+" 
+" " Show file name + current tag/function
+" let g:airline_section_c = '%t %{tagbar#currenttag("%s", "", "f")}'
+" 
+" " Show only filetype on the right
+" let g:airline_section_x = '%{&filetype}'
+" 
+" " Hide extra right-side sections
+" let g:airline_section_y = ''
+" let g:airline_section_z = ''
+" 
+" " Enable airline integration with tagbar
+" let g:airline#extensions#tagbar#enabled = 1
+" 
 " 				COC VIM SETTINGS
 " **************************************************************************
 " Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
@@ -280,12 +280,20 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 imap <silent><script><expr> <Right> copilot#Accept("")
 let g:copilot_no_tab_map = v:true
 
+"			END COPILOT SETTINGS
+" *************************************************************************** "
+
 " GIT SETTINGS
 "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
 let g:fugitive_gitlab_domains = ['https://gitlab.dulltentacles.com/']
 
-"			END COPILOT SETTINGS
-" *************************************************************************** "
+command! -nargs=1 GitGutterBase
+      \ let g:gitgutter_diff_base = <q-args> |
+      \ GitGutter
+
+command! GitGutterBaseReset
+      \ unlet! g:gitgutter_diff_base |
+      \ GitGutter
 
 "			BEGIN EMMET SETTINGS
 " *************************************************************************** *
@@ -439,7 +447,7 @@ let g:bracey_auto_start = 0
 set number relativenumber
 
 function! s:ShouldUseNumbers() abort
-  return index(['Avante', 'AvanteInput', 'AvanteSelectedFiles'], &filetype) == -1
+  return index(['Avante', 'AvanteInput', 'AvanteSelectedFiles', 'nerdtree'], &filetype) == -1
 endfunction
 
 augroup numbertoggle
